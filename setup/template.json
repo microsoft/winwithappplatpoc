@@ -1,0 +1,129 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+		"uniqueSuffix": {
+			"type": "String",
+			"metadata": {
+			  "description": "Suffix added to all resource names to make them unique."
+			}
+		},
+		"publisherEmail": {
+		  "type": "string",
+		  "minLength": 1,
+		  "metadata": {
+			"description": "The email address of the owner of the API Management service"
+		  }
+		},
+		"publisherName": {
+		  "type": "string",
+		  "minLength": 1,
+		  "metadata": {
+			"description": "The name of the owner of the API Management service"
+		  }
+		}
+    },
+    "variables": {
+		"location": "[resourceGroup().location]",
+		"cosmosDbAccountName": "[concat(resourceGroup().name, '-cosmosdb-', parameters('uniqueSuffix'))]",
+		"appServiceAccountName": "[concat(resourceGroup().name, '-appsvc-', parameters('uniqueSuffix'))]",
+		"apiManagementServiceName": "[concat(resourceGroup().name, '-apiservice-', parameters('uniqueSuffix'))]",
+		"hostingPlanName": "[concat('contoso-asp-', uniqueString(resourceGroup().id))]"
+	},
+    "resources": [
+        {
+            "apiVersion": "2021-07-01-preview",
+            "kind": "GlobalDocumentDB",
+            "type": "Microsoft.DocumentDb/databaseAccounts",
+            "name": "[variables('cosmosDbAccountName')]",
+            "location": "[variables('location')]",
+            "properties": {
+                "databaseAccountOfferType": "Standard",
+                "locations": [
+                    {
+                        "id": "[concat(variables('cosmosDbAccountName'), '-', variables('location'))]",
+                        "failoverPriority": 0,
+                        "locationName": "[variables('location')]"
+                    }
+                ],
+                "backupPolicy": {
+                    "type": "Periodic",
+                    "periodicModeProperties": {
+                        "backupIntervalInMinutes": 240,
+                        "backupRetentionIntervalInHours": 8,
+                        "backupStorageRedundancy": "Geo"
+                    }
+                },
+                "isVirtualNetworkFilterEnabled": false,
+                "virtualNetworkRules": [],
+                "ipRules": [],
+                "dependsOn": [],
+                "enableMultipleWriteLocations": false,
+                "capabilities": [],
+                "enableFreeTier": false
+            },
+            "tags": {
+                "defaultExperience": "Core (SQL)",
+                "hidden-cosmos-mmspecial": ""
+            }
+        },
+		{
+		  "name": "[variables('hostingPlanName')]",
+		  "type": "Microsoft.Web/serverfarms",
+		  "apiVersion": "2020-06-01",
+		  "location": "[variables('location')]",
+		  "properties": {
+			"name": "[variables('hostingPlanName')]",
+			"workerSizeId": "0",
+			"numberOfWorkers": "1",
+			"hostingEnvironment": ""
+		  },
+		  "sku": {
+			"tier": "Standard",
+			"name": "S1"
+		  }
+		},
+		{
+            "apiVersion": "2018-11-01",
+            "name": "[variables('appServiceAccountName')]",
+            "type": "Microsoft.Web/sites",
+            "location": "[variables('location')]",
+            "tags": {},
+            "dependsOn": [
+				"[concat('Microsoft.Web/serverfarms/', variables('hostingPlanName'))]"
+			  ],
+            "properties": {
+                "name": "[variables('appServiceAccountName')]",
+                "siteConfig": {
+                    "appSettings": [],
+                    "metadata": [
+                        {
+                            "name": "CURRENT_STACK",
+                            "value": "dotnet"
+                        }
+                    ],
+                    "phpVersion": "OFF",
+                    "netFrameworkVersion": "v5.0",
+                    "alwaysOn": "true"
+                },
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms/', variables('hostingPlanName'))]",
+                "clientAffinityEnabled": true
+            }
+        },
+		{
+		  "type": "Microsoft.ApiManagement/service",
+		  "apiVersion": "2019-12-01",
+		  "name": "[variables('apiManagementServiceName')]",
+		  "location": "[variables('location')]",
+		  "sku": {
+                "name": "Consumption",
+                "capacity": "0"
+            },
+		  "properties": {
+			"publisherEmail": "[parameters('publisherEmail')]",
+			"publisherName": "[parameters('publisherName')]"
+		  }
+		}
+    ],
+    "outputs": {}
+}
