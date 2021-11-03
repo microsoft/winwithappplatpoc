@@ -63,7 +63,7 @@ The below ARM template deploys several Azure resources for the labs, including A
 
 1. Deploy the workspace through the following Azure ARM template (select the button below):
 
-    <a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fsolliancenet%2FContosoHealthcareAppInnovation%2Fmain%2Fsetup%2F%template.json" target="_blank"><img src="https://aka.ms/deploytoazurebutton" /></a>
+    <a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fmicrosoft%2Fwinwithappplatpoc%2Fmain%2Fsetup%2Ftemplate.json" target="_blank"><img src="https://aka.ms/deploytoazurebutton" /></a>
 
 2. On the **Custom deployment** form fill in the fields described below.
 
