@@ -2,7 +2,7 @@
 
 <h2>Hands-on lab</h2>
 
-October 2021
+September 2022
 
 **Table of contents**
 
@@ -30,7 +30,7 @@ October 2021
 
 ## Abstract and learning objectives
 
-In this hands-on-lab, you will build a proof of concept for an Application Innovation solution, combining several Azure services and technologies together to solve a customer problem.  In this lab, you will deploy a .NET 5 Web API application to App Services and perform continuous integration and continuous deployment with GitHub Actions.  Then, you will use the API Management service to "protect" Web API and allow for centralized API versioning and management.  Then, you will create a custom Power Apps connector from API and use it in a Power Apps application.
+In this hands-on-lab, you will build a proof of concept for an Application Innovation solution, combining several Azure services and technologies together to solve a customer problem.  In this lab, you will deploy a .NET 6 Web API application to App Services and perform continuous integration and continuous deployment with GitHub Actions.  Then, you will use the API Management service to "protect" Web API and allow for centralized API versioning and management.  ~~TODO Then, you will create a custom Power Apps connector from API and use it in a Power Apps application.~~
 
 ## Overview
 
@@ -38,7 +38,7 @@ In this hands-on-lab, you will build a proof of concept for an Application Innov
 
 Contoso already uses a variety of Microsoft Azure services, taking advantage of both Infrastructure-as-a-Service and Platform-as-a-Service offerings.  Their software engineers and infrastructure team have a good working familiarity with Azure services and wish to use this opportunity to develop an innovative product which can serve as a guide for future modernization of their existing applications and infrastructure.
 
-The Engineering team at Contoso Healthcare is looking for a modern, innovative application platform, but this is not the only key group which will be involved.  Business Analysts will be responsible for creating the business logic and user experience for most of the Health Checks applications.  These Business Analysts are not software developers, and they would like a low-code or no-code approach to application development without relying on Engineering.  These applications should be able to access API endpoints which the Engineering team plan to build.
+The Engineering team at Contoso Healthcare is looking for a modern, innovative application platform, but this is not the only key group which will be involved.  Business Analysts will be responsible for creating the business logic and user experience for most of the Health Checks applications.  ~~TODO These Business Analysts are not software developers, and they would like a low-code or no-code approach to application development without relying on Engineering.~~  These applications should be able to access API endpoints which the Engineering team plan to build.
 
 Contoso would like to manage one API for accessing the back end of all of these health applications.  In practice, Contoso expects something on the order of 15-20 endpoints to support the breadth of their health check application suite, but for the purposes of a proof of concept, they would like to see two endpoints implemented:  one which submits information on current health status and one which retrieves submissions for the registered user.  The key data points Contoso would like to see in this proof of concept are as follows:
 
@@ -54,11 +54,11 @@ For this proof of concept, Contoso would also like to see a model example of Con
 
 ## Solution architecture
 
-The following diagram provides a high-level overview of the Azure services we will use for implementation.
+The following diagram provides a high-level overview of the Azure services we will use for implementation. **TODO new diagram**
 
 ![High-level architecture, as described below.](media/architecture-diagram.png "High-level architecture")
 
-API Management will allow Contoso Healthcare to centralize and manage information on a variety of API endpoints.  These API endpoints may be implemented using a variety of Azure services, but the one which makes the most intuitive sense is Azure App Services.  The serverless approach to Azure Function apps would fit Contoso's desire to limit dependencies on their operations staff, so it is also a good choice, but the Contoso developers already have experience developing Web API applications and can easily adapt that knowledge to App Services.  API Management also allows developers and business analysts to create Power Apps from the Azure portal, making it easy to consume these exposed API endpoints.
+API Management will allow Contoso Healthcare to centralize and manage information on a variety of API endpoints.  These API endpoints may be implemented using a variety of Azure services, but the one which makes the most intuitive sense is Azure App Services.  The serverless approach to Azure Function apps would fit Contoso's desire to limit dependencies on their operations staff, so it is also a good choice, but the Contoso developers already have experience developing Web API applications and can easily adapt that knowledge to App Services.  ~~TODO API Management also allows developers and business analysts to create Power Apps from the Azure portal, making it easy to consume these exposed API endpoints.~~
 
 To store and retrieve data, the functions will use Cosmos DB for data storage.  This satisfies customer requests for a flexible schema and includes a rich .NET interface.  Furthermore, via Cosmos Link, we can include an automated process to make data available in Azure Synapse Analytics dedicated SQL pools or Spark pools.  This allows Contoso Healthcare data scientists to analyze data across a variety of end users over time without building extensive ELT pipelines or processes.  Because this would be a "phase two" operation, it deserves mention in an architectural diagram but will not be part of the proof of concept.
 
@@ -74,16 +74,14 @@ Azure Front Door is a layer 7 load balancer which includes web application firew
 
     - Trial subscriptions will not work.
 
-2. Power Apps subscription.  In order to use the custom connector we will create from API Management, you will need a Power Apps per app or per user plan.  You may also use the free [Power Apps developer plan](https://powerapps.microsoft.com/en-us/developerplan/).
-
-3. Install [Visual Studio Code](https://code.visualstudio.com/).
+2. Install [Visual Studio Code](https://code.visualstudio.com/).
 
     - Install the [C# for Visual Studio Code extension](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csharp).
-    - Install the [Azure App Service for Visual STudio Code extension](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azureappservice).
+    - Install the [Azure App Service for Visual Studio Code extension](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azureappservice).
 
-4. Install the latest version of [the .NET 5 SDK](https://dotnet.microsoft.com/download/dotnet/5.0).
+3. Install the latest version of [the .NET 6 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/6.0).
 
-5. Install the latest version of the [Postman](https://www.postman.com/) client.
+4. Install the latest version of the [Postman](https://www.postman.com/) client.
 
 ## Before the hands-on lab
 
@@ -97,20 +95,16 @@ Refer to the [Before the hands-on lab setup guide](Before%20the%20Hands-On%20Lab
 
     ![In the Overview, Add Container is selected.](media/azure-cosmos-db-add-container.png 'Add Container')
 
-2. In the **Data Explorer**, select **New Container** to create a new container.
-
-    ![In the Data Explorer tab, New Container is selected.](media/azure-cosmos-db-new-container.png 'New Container')
-
 3. In the **New Container** tab, complete the following:
 
-   | Field                          | Value                                              |
-   | ------------------------------ | ------------------------------------------         |
-   | Database id                    | _select `Create new` and enter `HealthCheckDB`_    |
-   | Share throughput across containers | _select the checkbox_                          |
-   | Throughput                     | _select `Manual`_                                  |
-   | Number of R/Us                 | _enter `400`_                                      |
-   | Container id                   | _`HealthCheck`_                                    |
-   | Partition key                  | _`/id`_                                            |
+   | Field                              | Value                                           |
+   | ---------------------------------- | ----------------------------------------------- |
+   | Database id                        | _select `Create new` and enter `HealthCheckDB`_ |
+   | Share throughput across containers | _select the checkbox_                           |
+   | Throughput                         | _select `Manual`_                               |
+   | Number of R/Us                     | _enter `400`_                                   |
+   | Container id                       | _`HealthCheck`_                                 |
+   | Partition key                      | _`/id`_                                         |
 
    ![The form fields are completed with the previously described settings.](media/azure-create-cosmos-db-healthcheck-container.png 'Create a container for health checks')
 
@@ -187,7 +181,7 @@ Refer to the [Before the hands-on lab setup guide](Before%20the%20Hands-On%20Lab
 
     ![Adding health checks records through Postman.](media/health-checks-add-records.png 'Add records')
 
-9. Use the `GET` verb on the `HealthCheck` endpoint to retrieve an array containing health check records.  
+9. Use the `GET` verb on the `HealthCheck` endpoint to retrieve an array containing health check records.
 
     ![Retrieving health checks records through Postman.](media/health-checks-get-records.png 'Get records')
 
@@ -217,12 +211,12 @@ Refer to the [Before the hands-on lab setup guide](Before%20the%20Hands-On%20Lab
 
 6. Navigate to the **Configuration** option in the **Settings** menu for your App Service and select **+ New application setting**.  Enter the following application settings:
 
-    |Name|Value|
-    |----|-----|
-    |Account| _enter the URL of your Cosmos DB account_ |
-    |Key| _enter the primary key for your Cosmos DB account_ |
-    |DatabaseName| _enter `HealthCheckDB`_ |
-    |ContainerName| _enter `HealthCheck`_ |
+    | Name                    | Value                                              |
+    | ----------------------- | -------------------------------------------------- |
+    | CosmosDb__Account       | _enter the URL of your Cosmos DB account_          |
+    | CosmosDb__Key           | _enter the primary key for your Cosmos DB account_ |
+    | CosmosDb__DatabaseName  | _enter `HealthCheckDB`_                            |
+    | CosmosDb__ContainerName | _enter `HealthCheck`_                              |
 
     Select **Save** to save these application settings.
 
@@ -280,7 +274,7 @@ Because this project uses the `Swashbuckle.AspNetCore` NuGet package, we can bui
 
 ### Task 2:  Connect API Management to the App Service
 
-1. Open the API Management service in your `tsi-win-with-app-platform` resource group.  Navigate to the **APIs** option in the **APIs** menu, choose **+ Add API**, and select **OpenAPI** in the **Create from definition** section.
+1. Open the API Management service in your `taw-win-with-app-platform` resource group.  Navigate to the **APIs** option in the **APIs** menu, choose **+ Add API**, and select **OpenAPI** in the **Create from definition** section.
 
     > **Note:**  There is an option in the **Define a new API** menu for defining an App Service API, and there is a way to connect an App Service directly to API Management, but these two methods will require manual editing of the Swagger file to work.  This method will automatically pick up all available endpoints without adding spurious `TRACE` or `HEAD` verbs.
 
@@ -288,12 +282,12 @@ Because this project uses the `Swashbuckle.AspNetCore` NuGet package, we can bui
 
 2. Create a new API from an OpenAPI specification by entering the following details.  Then select **Create** to generate a new API.
 
-    | Parameter                   | Value                                |
-    | --------------------------- | -------------------------------------|
-    | OpenAPI specification       | Enter the swagger.json URL           |
-    | Display name                | Enter `HealthChecks`                 |
-    | Name                        | Enter `healthchecks`                 |
-    | API URL suffix              | Leave blank                          |
+    | Parameter             | Value                      |
+    | --------------------- | -------------------------- |
+    | OpenAPI specification | Enter the swagger.json URL |
+    | Display name          | Enter `HealthChecks`       |
+    | Name                  | Enter `healthchecks`       |
+    | API URL suffix        | Leave blank                |
 
     ![Create a new API from an OpenAPI specification.](media/apim-create.png 'Create from OpenAPI specification')
 
@@ -331,7 +325,7 @@ For this final exercise, you will need a Power Apps subscription.  This may be a
 
 ### Task 1:  Create a custom Power Apps connector
 
-1. In your App Management service, navigate to the **Power Platform** menu option in the **APIs** menu.  Then, select **Create a connector**.
+1. In your API Management service, navigate to the **Power Platform** menu option in the **APIs** menu.  Then, select **Create a connector**.
 
     ![Create a custom connector from API Management to Power Apps.](media/apim-create-connector.png 'Create a connector')
 

@@ -103,7 +103,7 @@
                         }
                     ],
                     "phpVersion": "OFF",
-                    "netFrameworkVersion": "v5.0",
+                    "netFrameworkVersion": "v6.0",
                     "alwaysOn": "true"
                 },
                 "serverFarmId": "[resourceId('Microsoft.Web/serverfarms/', variables('hostingPlanName'))]",
