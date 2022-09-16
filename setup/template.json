@@ -3,7 +3,7 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "uniqueSuffix": {
-      "type": "String",
+      "type": "string",
       "metadata": {
         "description": "Suffix added to all resource names to make them unique."
       }
@@ -25,12 +25,52 @@
   },
   "variables": {
     "location": "[resourceGroup().location]",
+    "acrName": "[replace(concat(resourceGroup().name, '-acr-', parameters('uniqueSuffix')),'-','')]",
+    "clusterName": "[concat(resourceGroup().name, '-aks-', parameters('uniqueSuffix'))]",
     "cosmosDbAccountName": "[concat(resourceGroup().name, '-cosmosdb-', parameters('uniqueSuffix'))]",
     "appServiceAccountName": "[concat(resourceGroup().name, '-appsvc-', parameters('uniqueSuffix'))]",
     "apiManagementServiceName": "[concat(resourceGroup().name, '-apiservice-', parameters('uniqueSuffix'))]",
     "hostingPlanName": "[concat('contoso-asp-', uniqueString(resourceGroup().id))]"
   },
   "resources": [
+    {
+      "type": "Microsoft.ContainerService/managedClusters",
+      "apiVersion": "2022-05-02-preview",
+      "name": "[variables('clusterName')]",
+      "location": "[variables('location')]",
+      "identity": {
+        "type": "SystemAssigned"
+      },
+      "properties": {
+        "dnsPrefix": "[parameters('uniqueSuffix')]",
+        "agentPoolProfiles": [
+          {
+            "name": "agentpool",
+            "osDiskSizeGB": 1023,
+            "count": 3,
+            "vmSize": "Standard_D2s_v3",
+            "osType": "Linux",
+            "mode": "System"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.ContainerRegistry/registries",
+      "apiVersion": "2021-09-01",
+      "name": "[variables('acrName')]",
+      "location": "[variables('location')]",
+      "tags": {
+        "displayName": "Container Registry",
+        "container.registry": "[variables('acrName')]"
+      },
+      "sku": {
+        "name": "Basic"
+      },
+      "properties": {
+        "adminUserEnabled": false
+      }
+    },
     {
       "apiVersion": "2021-07-01-preview",
       "kind": "GlobalDocumentDB",
