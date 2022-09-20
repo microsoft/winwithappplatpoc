@@ -17,7 +17,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "Contoso.Healthcare": {
+    "Humungous.Healthcare": {
       "commandName": "Project",
       "dotnetRunMessages": "true",
       "launchBrowser": true,

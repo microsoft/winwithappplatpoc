@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Contoso.Healthcare
+namespace Humungous.Healthcare
 {
     public class Program
     {

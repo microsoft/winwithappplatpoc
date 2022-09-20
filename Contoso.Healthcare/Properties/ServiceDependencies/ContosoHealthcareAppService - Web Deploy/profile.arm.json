@@ -21,7 +21,7 @@
     },
     "resourceName": {
       "type": "string",
-      "defaultValue": "ContosoHealthcareAppService",
+      "defaultValue": "HumungousHealthcareAppService",
       "metadata": {
         "description": "Name of the main resource to be created by this template."
       }

@@ -1,12 +1,12 @@
-﻿using Contoso.Healthcare.Models;
-using Contoso.Healthcare.Services;
+﻿using Humungous.Healthcare.Models;
+using Humungous.Healthcare.Services;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Contoso.Healthcare.Controllers
+namespace Humungous.Healthcare.Controllers
 {
     [Route("[controller]")]
     [ApiController]
