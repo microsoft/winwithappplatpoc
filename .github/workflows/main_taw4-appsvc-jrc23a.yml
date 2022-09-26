@@ -12,8 +12,8 @@ on:
       - '.github/workflows/main_taw4-appsvc-jrc23a.yml'
 
 env:
-  REACT_APP_API_URL: secrets.API_URL
-  REACT_APP_API_KEY: secrets.API_KEY
+  REACT_APP_API_URL: ${{ secrets.API_URL }}
+  REACT_APP_API_KEY: ${{ secrets.API_KEY }}
 jobs:
   build:
     runs-on: windows-latest
