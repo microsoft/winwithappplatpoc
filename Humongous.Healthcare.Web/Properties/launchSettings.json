@@ -8,7 +8,7 @@
     }
   },
   "profiles": {
-    "Humungous.Healthcare.Web": {
+    "Humongous.Healthcare.Web": {
       "commandName": "Project",
       "launchBrowser": true,
       "applicationUrl": "https://localhost:7258;http://localhost:5271",

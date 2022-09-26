@@ -7,14 +7,15 @@ on:
   push:
     branches:
       - main
-  workflow_dispatch:
+    paths:
+      - 'Humongous.Healthcare.Web/**'
 
 jobs:
   build:
     runs-on: windows-latest
     defaults:
       run:
-        working-directory: ./Humungous.Healthcare.Web/
+        working-directory: ./Humongous.Healthcare.Web/
         
     steps:
       - uses: actions/checkout@v2
