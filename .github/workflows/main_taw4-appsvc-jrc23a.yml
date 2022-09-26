@@ -14,7 +14,7 @@ jobs:
     runs-on: windows-latest
     defaults:
       run:
-        working-directory: ./Humongous.Healthcare.Web/
+        working-directory: ./Humungous.Healthcare.Web/
         
     steps:
       - uses: actions/checkout@v2
