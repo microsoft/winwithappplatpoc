@@ -7,6 +7,7 @@ import { HealthCheckList } from './components/HealthCheckList';
 import './custom.css'
 
 export default class App extends Component {
+  // eslint-disable-next-line
   static displayName = App.name;
 
   render () {

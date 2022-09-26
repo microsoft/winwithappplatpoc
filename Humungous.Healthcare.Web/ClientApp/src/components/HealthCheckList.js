@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 export class HealthCheckList extends Component {
+    // eslint-disable-next-line
     static displayName = HealthCheckList.name
 
     constructor(props) {

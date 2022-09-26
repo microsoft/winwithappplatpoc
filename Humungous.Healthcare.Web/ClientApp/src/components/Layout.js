@@ -3,6 +3,7 @@ import { Container } from 'reactstrap';
 import { NavMenu } from './NavMenu';
 
 export class Layout extends Component {
+  // eslint-disable-next-line
   static displayName = Layout.name;
 
   render () {
