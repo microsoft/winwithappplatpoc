@@ -9,6 +9,7 @@ on:
       - main
     paths:
       - 'Humongous.Healthcare.Web/**'
+      - '.github/workflows/main_taw4-appsvc-jrc23a.yml'
 
 env:
   REACT_APP_API_URL: secrets.API_URL
