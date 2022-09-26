@@ -1,2 +1,2 @@
 [config]
-project/Humungous.Healthcare.Web
+project = Humungous.Healthcare.Web
