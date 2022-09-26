@@ -7,10 +7,16 @@ export class HealthCheckList extends Component {
     constructor(props) {
         super(props);
         this.state = { healthChecks: [], loading: true };
+        this.handleSubmitHealthCheck = this.handleSubmitHealthCheck.bind(this);
     }
 
     componentDidMount() {
         this.populateHealthCheckData();
+    }
+
+    handleSubmitHealthCheck(event) {
+        event.preventDefault();
+        console.log('Handle click.');
     }
 
     static renderHealthChecksTable(healthChecks) {
@@ -22,7 +28,6 @@ export class HealthCheckList extends Component {
                         <th>Patient Id</th>
                         <th>Date</th>
                         <th>Status</th>
-                        <th>Symptoms</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -35,6 +40,11 @@ export class HealthCheckList extends Component {
                         </tr>
                     )}
                 </tbody>
+                <tfoot>
+                    <tr>
+                        <td><a href="/submit-health-check">Add HealthCheck</a></td>
+                    </tr>
+                </tfoot>
             </table>
         );
     }
@@ -54,7 +64,7 @@ export class HealthCheckList extends Component {
     }
 
     async populateHealthCheckData() {
-        const response = await fetch('https://taw4-apiservice-jrc23a.azure-api.net/HealthCheck?subscription-key=5a896ea85a2147349c51371f09be4ea8');
+        const response = await fetch(process.env.REACT_APP_API_URL + '?subscription-key=' + process.env.REACT_APP_API_KEY);
         const data = await response.json();
         this.setState({ healthChecks: data, loading: false });
     }
