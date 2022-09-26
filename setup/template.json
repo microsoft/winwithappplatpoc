@@ -30,9 +30,23 @@
     "cosmosDbAccountName": "[concat(resourceGroup().name, '-cosmosdb-', parameters('uniqueSuffix'))]",
     "appServiceAccountName": "[concat(resourceGroup().name, '-appsvc-', parameters('uniqueSuffix'))]",
     "apiManagementServiceName": "[concat(resourceGroup().name, '-apiservice-', parameters('uniqueSuffix'))]",
-    "hostingPlanName": "[concat('contoso-asp-', uniqueString(resourceGroup().id))]"
+    "hostingPlanName": "[concat('Humongous-asp-', uniqueString(resourceGroup().id))]"
   },
   "resources": [
+    {
+      "type": "Microsoft.ContainerRegistry/registries/providers/roleAssignments",
+      "apiVersion": "2018-09-01-preview",
+      "name": "[concat(variables('acrName'), '/Microsoft.Authorization/', guid(variables('acrName')))]",
+      "dependsOn": [
+        "[concat('Microsoft.ContainerService/managedClusters/', variables('clusterName'))]"
+      ],
+      "properties": {
+        "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', '7f951dda-4ed3-4680-a7ca-43fe172d538d')]",
+        "principalType": "ServicePrincipal",
+        "principalId": "[reference(variables('clusterName'), '2022-06-01').identityProfile.kubeletidentity.objectId]",
+        "scope": "[resourceId('Microsoft.ContainerRegistry/registries/', variables('acrName'))]"
+      }
+    },
     {
       "type": "Microsoft.ContainerService/managedClusters",
       "apiVersion": "2022-05-02-preview",
@@ -68,7 +82,7 @@
         "name": "Basic"
       },
       "properties": {
-        "adminUserEnabled": false
+        "adminUserEnabled": true
       }
     },
     {

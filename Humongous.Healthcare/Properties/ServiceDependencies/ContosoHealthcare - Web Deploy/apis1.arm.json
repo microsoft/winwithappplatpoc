@@ -36,7 +36,7 @@
     },
     {
       "type": "Microsoft.Resources/deployments",
-      "name": "[concat(parameters('resourceGroupName'), 'Deployment', uniqueString(concat('HumungousHealthcareAPI', subscription().subscriptionId)))]",
+      "name": "[concat(parameters('resourceGroupName'), 'Deployment', uniqueString(concat('HumongousHealthcareAPI', subscription().subscriptionId)))]",
       "resourceGroup": "[parameters('resourceGroupName')]",
       "apiVersion": "2019-10-01",
       "dependsOn": [
@@ -49,7 +49,7 @@
           "contentVersion": "1.0.0.0",
           "resources": [
             {
-              "name": "HumungousHealthcareapim",
+              "name": "HumongousHealthcareapim",
               "type": "Microsoft.ApiManagement/service",
               "location": "[parameters('resourceLocation')]",
               "properties": {
@@ -59,7 +59,7 @@
                 "hostnameConfigurations": [
                   {
                     "type": "Proxy",
-                    "hostName": "Humungoushealthcareapim.azure-api.net",
+                    "hostName": "Humongoushealthcareapim.azure-api.net",
                     "encodedCertificate": null,
                     "keyVaultId": null,
                     "certificatePassword": null,
@@ -94,13 +94,13 @@
             },
             {
               "type": "Microsoft.ApiManagement/service/apis",
-              "name": "HumungousHealthcareapim/HumungousHealthcareAPI",
+              "name": "HumongousHealthcareapim/HumongousHealthcareAPI",
               "properties": {
-                "displayName": "Humungous.Healthcare",
+                "displayName": "HumongousHealthcareAPI",
                 "apiRevision": "1",
                 "description": null,
-                "subscriptionRequired": false,
-                "serviceUrl": "https://Humungoushealthcare.azurewebsites.net",
+                "subscriptionRequired": true,
+                "serviceUrl": null,
                 "path": "",
                 "protocols": [
                   "https"
@@ -117,7 +117,7 @@
               },
               "apiVersion": "2019-12-01",
               "dependsOn": [
-                "HumungousHealthcareapim"
+                "HumongousHealthcareapim"
               ]
             }
           ]

@@ -1,10 +1,10 @@
-﻿using Humungous.Healthcare.Models;
+﻿using Humongous.Healthcare.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Humungous.Healthcare.Services
+namespace Humongous.Healthcare.Services
 {
     public interface ICosmosDbService
     {

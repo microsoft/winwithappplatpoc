@@ -1,4 +1,4 @@
-<h1>Win with App Innovation -- Contoso Healthcare Proof of Concept</h1>
+<h1>Win with App Innovation -- Humongous Healthcare Proof of Concept</h1>
 
 <h2>Before the hands-on lab</h2>
 

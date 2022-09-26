@@ -1,4 +1,4 @@
-using Humungous.Healthcare.Services;
+using Humongous.Healthcare.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -12,7 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Humungous.Healthcare
+namespace Humongous.Healthcare
 {
     public class Startup
     {
@@ -30,7 +30,7 @@ namespace Humungous.Healthcare
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Humungous.Healthcare", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Humongous.Healthcare", Version = "v1" });
             });
             services.AddSingleton<ICosmosDbService>(InitializeCosmosClientInstanceAsync(Configuration.GetSection("CosmosDb")).GetAwaiter().GetResult());
         }
@@ -43,7 +43,7 @@ namespace Humungous.Healthcare
                 app.UseDeveloperExceptionPage();
             }
             app.UseSwagger();
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Humungous.Healthcare v1"));
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Humongous.Healthcare v1"));
 
             app.UseRouting();
 

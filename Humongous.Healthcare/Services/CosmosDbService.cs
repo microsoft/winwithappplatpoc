@@ -1,4 +1,4 @@
-﻿using Humungous.Healthcare.Models;
+﻿using Humongous.Healthcare.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Cosmos.Fluent;
 using Microsoft.Extensions.Configuration;
 
-namespace Humungous.Healthcare.Services
+namespace Humongous.Healthcare.Services
 {
     public class CosmosDbService : ICosmosDbService
     {

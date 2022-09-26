@@ -1,4 +1,4 @@
-<h1>Win with App Platform -- Contoso Healthcare Proof of Concept</h1>
+<h1>Win with App Platform -- Humongous Healthcare Proof of Concept</h1>
 
 <h2>Hands-on lab</h2>
 
@@ -14,9 +14,9 @@ September 2022
   - [Before the hands-on lab](#before-the-hands-on-lab)
   - [Exercise 1:  Finish configuring Azure services and retrieve values](#exercise-1--finish-configuring-azure-services-and-retrieve-values)
     - [Task 1: Create Cosmos DB container](#task-1-create-cosmos-db-container)
-  - [Exercise 2:  Review and publish the Contoso Healthcare Web API service](#exercise-2--review-and-publish-the-contoso-healthcare-web-api-service)
-    - [Task 1:  Review the Contoso Healthcare Web API service](#task-1--review-the-contoso-healthcare-web-api-service)
-    - [Task 2:  Deploy the Contoso Healthcare Web API service to App Services](#task-2--deploy-the-contoso-healthcare-web-api-service-to-app-services)
+  - [Exercise 2:  Review and publish the Humongous Healthcare Web API service](#exercise-2--review-and-publish-the-Humongous-healthcare-web-api-service)
+    - [Task 1:  Review the Humongous Healthcare Web API service](#task-1--review-the-Humongous-healthcare-web-api-service)
+    - [Task 2:  Deploy the Humongous Healthcare Web API service to App Services](#task-2--deploy-the-Humongous-healthcare-web-api-service-to-app-services)
   - [Exercise 3:  Configure continuous deployment with GitHub Actions](#exercise-3--configure-continuous-deployment-with-github-actions)
     - [Task 1:  Create and Edit a GitHub Action](#task-1--create-and-edit-a-github-action)
   - [Exercise 4:  Configure API Management](#exercise-4--configure-api-management)
@@ -34,13 +34,13 @@ In this hands-on-lab, you will build a proof of concept for an Application Innov
 
 ## Overview
 
-**Contoso Healthcare** is a global network of healthcare providers with presence throughout the industry.  Contoso Healthcare wishes to drive a new Health Checks initiative, which specifically entails building a suite of health check applications for end users.  These applications will allow users to submit information on their current health status and submit a questionnaire concerning any medical symptoms they might have experienced over the past 14 days.
+**Humongous Healthcare** is a global network of healthcare providers with presence throughout the industry.  Humongous Healthcare wishes to drive a new Health Checks initiative, which specifically entails building a suite of health check applications for end users.  These applications will allow users to submit information on their current health status and submit a questionnaire concerning any medical symptoms they might have experienced over the past 14 days.
 
-Contoso already uses a variety of Microsoft Azure services, taking advantage of both Infrastructure-as-a-Service and Platform-as-a-Service offerings.  Their software engineers and infrastructure team have a good working familiarity with Azure services and wish to use this opportunity to develop an innovative product which can serve as a guide for future modernization of their existing applications and infrastructure.
+Humongous already uses a variety of Microsoft Azure services, taking advantage of both Infrastructure-as-a-Service and Platform-as-a-Service offerings.  Their software engineers and infrastructure team have a good working familiarity with Azure services and wish to use this opportunity to develop an innovative product which can serve as a guide for future modernization of their existing applications and infrastructure.
 
-The Engineering team at Contoso Healthcare is looking for a modern, innovative application platform, but this is not the only key group which will be involved.  Business Analysts will be responsible for creating the business logic and user experience for most of the Health Checks applications.  ~~TODO These Business Analysts are not software developers, and they would like a low-code or no-code approach to application development without relying on Engineering.~~  These applications should be able to access API endpoints which the Engineering team plan to build.
+The Engineering team at Humongous Healthcare is looking for a modern, innovative application platform, but this is not the only key group which will be involved.  Business Analysts will be responsible for creating the business logic and user experience for most of the Health Checks applications.  ~~TODO These Business Analysts are not software developers, and they would like a low-code or no-code approach to application development without relying on Engineering.~~  These applications should be able to access API endpoints which the Engineering team plan to build.
 
-Contoso would like to manage one API for accessing the back end of all of these health applications.  In practice, Contoso expects something on the order of 15-20 endpoints to support the breadth of their health check application suite, but for the purposes of a proof of concept, they would like to see two endpoints implemented:  one which submits information on current health status and one which retrieves submissions for the registered user.  The key data points Contoso would like to see in this proof of concept are as follows:
+Humongous would like to manage one API for accessing the back end of all of these health applications.  In practice, Humongous expects something on the order of 15-20 endpoints to support the breadth of their health check application suite, but for the purposes of a proof of concept, they would like to see two endpoints implemented:  one which submits information on current health status and one which retrieves submissions for the registered user.  The key data points Humongous would like to see in this proof of concept are as follows:
 
 - Submission ID, generated by the system
 - Patient ID, handled as part of a future authentication process.  For the proof of concept, it would be okay for the end application to hard-code the patient ID
@@ -48,9 +48,9 @@ Contoso would like to manage one API for accessing the back end of all of these 
 - Current health status (one of "I feel well" or "I feel unwell")
 - A list of symptoms over the past 14 days, where each symptom is a free-form text entry with no validation
 
-Contoso's Engineering team also wish to have all data stored in a single database, as this will simplify security and open up opportunities for their data scientists to analyze the data most efficiently.  In addition, they would like to centralize management of any access points to the data.  Different Engineering teams will work on separate API endpoints and they are interested in anything which can improve the coordination between teams.  As far as data storage is concerned, the architects would like to see flexible data structures.  The reason for this is that individual providers in their network often have differing requirements on what data they collect, depending on their specialization.  The questionnaires which end users fill out will likely differ based on facility, mode of treatment, nation, and region.  They may also change over time to support additional testing options, such as asking end users a subset of the questions sometimes or adding and removing questions from the survey applications.
+Humongous's Engineering team also wish to have all data stored in a single database, as this will simplify security and open up opportunities for their data scientists to analyze the data most efficiently.  In addition, they would like to centralize management of any access points to the data.  Different Engineering teams will work on separate API endpoints and they are interested in anything which can improve the coordination between teams.  As far as data storage is concerned, the architects would like to see flexible data structures.  The reason for this is that individual providers in their network often have differing requirements on what data they collect, depending on their specialization.  The questionnaires which end users fill out will likely differ based on facility, mode of treatment, nation, and region.  They may also change over time to support additional testing options, such as asking end users a subset of the questions sometimes or adding and removing questions from the survey applications.
 
-For this proof of concept, Contoso would also like to see a model example of Continuous Integration and Continuous Deployment (CI/CD) pipelines for code development and deployment.
+For this proof of concept, Humongous would also like to see a model example of Continuous Integration and Continuous Deployment (CI/CD) pipelines for code development and deployment.
 
 ## Solution architecture
 
@@ -58,13 +58,13 @@ The following diagram provides a high-level overview of the Azure services we wi
 
 ![High-level architecture, as described below.](media/architecture-diagram.png "High-level architecture")
 
-API Management will allow Contoso Healthcare to centralize and manage information on a variety of API endpoints.  These API endpoints may be implemented using a variety of Azure services, but the one which makes the most intuitive sense is Azure App Services.  The serverless approach to Azure Function apps would fit Contoso's desire to limit dependencies on their operations staff, so it is also a good choice, but the Contoso developers already have experience developing Web API applications and can easily adapt that knowledge to App Services.  ~~TODO API Management also allows developers and business analysts to create Power Apps from the Azure portal, making it easy to consume these exposed API endpoints.~~
+API Management will allow Humongous Healthcare to centralize and manage information on a variety of API endpoints.  These API endpoints may be implemented using a variety of Azure services, but the one which makes the most intuitive sense is Azure App Services.  The serverless approach to Azure Function apps would fit Humongous's desire to limit dependencies on their operations staff, so it is also a good choice, but the Humongous developers already have experience developing Web API applications and can easily adapt that knowledge to App Services.  ~~TODO API Management also allows developers and business analysts to create Power Apps from the Azure portal, making it easy to consume these exposed API endpoints.~~
 
-To store and retrieve data, the functions will use Cosmos DB for data storage.  This satisfies customer requests for a flexible schema and includes a rich .NET interface.  Furthermore, via Cosmos Link, we can include an automated process to make data available in Azure Synapse Analytics dedicated SQL pools or Spark pools.  This allows Contoso Healthcare data scientists to analyze data across a variety of end users over time without building extensive ELT pipelines or processes.  Because this would be a "phase two" operation, it deserves mention in an architectural diagram but will not be part of the proof of concept.
+To store and retrieve data, the functions will use Cosmos DB for data storage.  This satisfies customer requests for a flexible schema and includes a rich .NET interface.  Furthermore, via Cosmos Link, we can include an automated process to make data available in Azure Synapse Analytics dedicated SQL pools or Spark pools.  This allows Humongous Healthcare data scientists to analyze data across a variety of end users over time without building extensive ELT pipelines or processes.  Because this would be a "phase two" operation, it deserves mention in an architectural diagram but will not be part of the proof of concept.
 
 For this solution, we used GitHub for source control and continuous integration/continuous deployment tasks.  Azure DevOps is another viable alternative.  After checking code in, a GitHub Action will deploy the .NET Web API code to an existing App Service, making changes and deployment straightforward.  This also provides the opportunity to perform unit and integration testing against code before deploying the code, although that is out of scope of the proof of concept.
 
-Azure Front Door is a layer 7 load balancer which includes web application firewall (WAF) capabilities.  This allows Contoso to implement the [Gatekeeper architecture pattern](https://docs.microsoft.com/en-us/azure/architecture/patterns/gatekeeper) and secure their APIs against malicious traffic, including IP addresses from known bot networks.  Contoso can use Azure-managed rule sets, as well as creating custom rule sets to monitor, redirect, or block traffic as configured.
+Azure Front Door is a layer 7 load balancer which includes web application firewall (WAF) capabilities.  This allows Humongous to implement the [Gatekeeper architecture pattern](https://docs.microsoft.com/en-us/azure/architecture/patterns/gatekeeper) and secure their APIs against malicious traffic, including IP addresses from known bot networks.  Humongous can use Azure-managed rule sets, as well as creating custom rule sets to monitor, redirect, or block traffic as configured.
 
 > **Note**:  This proof of concept will not include the Azure Front Door or Synapse Analytics services.
 
@@ -110,11 +110,11 @@ Refer to the [Before the hands-on lab setup guide](Before%20the%20Hands-On%20Lab
 
 4. Select **OK** to create the container. This will take you to the Data Explorer pane for Cosmos DB.
 
-## Exercise 2:  Review and publish the Contoso Healthcare Web API service
+## Exercise 2:  Review and publish the Humongous Healthcare Web API service
 
-### Task 1:  Review the Contoso Healthcare Web API service
+### Task 1:  Review the Humongous Healthcare Web API service
 
-1. Open the hands-on lab in Visual Studio Code and use the terminal to navigate to the `Contoso.Healthcare` project.
+1. Open the hands-on lab in Visual Studio Code and use the terminal to navigate to the `Humongous.Healthcare` project.
 
 2. Run the following commands in the terminal to restore and build the project, bringing in necessary packages.
 
@@ -187,7 +187,7 @@ Refer to the [Before the hands-on lab setup guide](Before%20the%20Hands-On%20Lab
 
 10. When you are done, use `Ctrl+C` to stop the dotnet service.
 
-### Task 2:  Deploy the Contoso Healthcare Web API service to App Services
+### Task 2:  Deploy the Humongous Healthcare Web API service to App Services
 
 1. Open the Azure extension for Visual Studio Code.  Navigate to the **App Service** menu and select your App Service account.  Then, select the **Deploy to Web App...** option.
 
@@ -197,9 +197,9 @@ Refer to the [Before the hands-on lab setup guide](Before%20the%20Hands-On%20Lab
 
     ![Select the Browse option.](media/vscode-app-service-1.png 'Browse for a folder')
 
-3. Choose the **Contoso.Healthcare** folder.
+3. Choose the **Humongous.Healthcare** folder.
 
-    ![Select the Contoso.Healthcare folder.](media/vscode-app-service-2.png 'Choose a folder')
+    ![Select the Humongous.Healthcare folder.](media/vscode-app-service-2.png 'Choose a folder')
 
 4. Choose the subscription hosting the App Service in the next step, and then select the App Service itself in the following step.
 
@@ -240,7 +240,7 @@ Refer to the [Before the hands-on lab setup guide](Before%20the%20Hands-On%20Lab
 
     ![Open the workflows folder.](media/cicd-workflows.png 'Open the workflows folder')
 
-4. Inside the folder, there should be one YAML file.  Open that file and then select the **Edit** option to modify this file.  We will need to make a change to build and deploy just the **Contoso.Healthcare** folder within our entire repository.
+4. Inside the folder, there should be one YAML file.  Open that file and then select the **Edit** option to modify this file.  We will need to make a change to build and deploy just the **Humongous.Healthcare** folder within our entire repository.
 
     ![Edit the GitHub Action.](media/cicd-edit.png 'Edit file')
 
@@ -249,7 +249,7 @@ Refer to the [Before the hands-on lab setup guide](Before%20the%20Hands-On%20Lab
     ```yaml
     defaults:
       run:
-        working-directory: ./Contoso.Healthcare/
+        working-directory: ./Humongous.Healthcare/
     ```
 
 6. After committing your changes, the GitHub Action should run automatically and succeed.  Select the **Actions** menu option to review workflow outcomes.  There will be one prior failure, which happened when App Services set up the initial GitHub Action pointing to the root folder.
@@ -305,7 +305,7 @@ Because this project uses the `Swashbuckle.AspNetCore` NuGet package, we can bui
 
     > **Note:**  If you receive a 500 error, make sure that you configured the web service URL in the prior step.
 
-6. Contoso Healthcare would like to perform rate limiting as a method of limiting risk of Denial of Service attacks.  In order to enable rate limiting on an API, return to the **Design** menu and ensure that you have selected **HealthChecks** and **All operations**.  From there, select **+ Add policy** under **Inbound processing**.
+6. Humongous Healthcare would like to perform rate limiting as a method of limiting risk of Denial of Service attacks.  In order to enable rate limiting on an API, return to the **Design** menu and ensure that you have selected **HealthChecks** and **All operations**.  From there, select **+ Add policy** under **Inbound processing**.
 
     ![Add a new inbound processing policy.](media/apim-new-policy.png 'Add policy')
 
@@ -313,7 +313,7 @@ Because this project uses the `Swashbuckle.AspNetCore` NuGet package, we can bui
 
     ![Select the Limit call rate policy.](media/apim-select-policy.png 'Select policy')
 
-8. Contoso would like to ensure that a particular user does not send more than 10 calls over a 300-second period.  Enter those values into the appropriate fields and select **Save** to create this policy.
+8. Humongous would like to ensure that a particular user does not send more than 10 calls over a 300-second period.  Enter those values into the appropriate fields and select **Save** to create this policy.
 
     ![Limit inbound calls to no more than 10 per 300 seconds per user.](media/apim-create-policy.png 'Create policy')
 

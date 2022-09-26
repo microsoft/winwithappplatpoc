@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace Humungous.Healthcare.Models
+namespace Humongous.Healthcare.Models
 {
     public class HealthCheck
     {

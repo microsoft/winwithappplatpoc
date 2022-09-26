@@ -36,7 +36,7 @@
     },
     {
       "type": "Microsoft.Resources/deployments",
-      "name": "[concat(parameters('resourceGroupName'), 'Deployment', uniqueString(concat('HumungousHealthcare', subscription().subscriptionId)))]",
+      "name": "[concat(parameters('resourceGroupName'), 'Deployment', uniqueString(concat('HumongousHealthcare', subscription().subscriptionId)))]",
       "resourceGroup": "[parameters('resourceGroupName')]",
       "apiVersion": "2019-10-01",
       "dependsOn": [
@@ -54,7 +54,7 @@
               "location": "[parameters('resourceLocation')]",
               "properties": {
                 "publisherEmail": "lino@thetrainingboss.com",
-                "publisherName": "Humungous Healthcare",
+                "publisherName": "Humongous Healthcare",
                 "notificationSenderEmail": "apimgmt-noreply@mail.windowsazure.com",
                 "hostnameConfigurations": [
                   {
@@ -99,9 +99,9 @@
             },
             {
               "type": "Microsoft.ApiManagement/service/apis",
-              "name": "LinoAPIM/HumungousHealthcare",
+              "name": "LinoAPIM/HumongousHealthcare",
               "properties": {
-                "displayName": "HumungousHealthcare",
+                "displayName": "HumongousHealthcare",
                 "apiRevision": "1",
                 "description": null,
                 "subscriptionRequired": true,

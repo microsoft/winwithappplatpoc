@@ -1,12 +1,12 @@
-﻿using Humungous.Healthcare.Models;
-using Humungous.Healthcare.Services;
+﻿using Humongous.Healthcare.Models;
+using Humongous.Healthcare.Services;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Humungous.Healthcare.Controllers
+namespace Humongous.Healthcare.Controllers
 {
     [Route("[controller]")]
     [ApiController]
