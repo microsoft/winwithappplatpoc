@@ -14,9 +14,9 @@ September 2022
   - [Before the hands-on lab](#before-the-hands-on-lab)
   - [Exercise 1:  Finish configuring Azure services and retrieve values](#exercise-1--finish-configuring-azure-services-and-retrieve-values)
     - [Task 1: Create Cosmos DB container](#task-1-create-cosmos-db-container)
-  - [Exercise 2:  Review and publish the Humongous Healthcare Web API service](#exercise-2--review-and-publish-the-Humongous-healthcare-web-api-service)
-    - [Task 1:  Review the Humongous Healthcare Web API service](#task-1--review-the-Humongous-healthcare-web-api-service)
-    - [Task 2:  Deploy the Humongous Healthcare Web API service to App Services](#task-2--deploy-the-Humongous-healthcare-web-api-service-to-app-services)
+  - [Exercise 2:  Review and publish the Humongous Healthcare Web API service](#exercise-2--review-and-publish-the-humongous-healthcare-web-api-service)
+    - [Task 1:  Review the Humongous Healthcare Web API service](#task-1--review-the-humongous-healthcare-web-api-service)
+    - [Task 2:  Deploy the Humongous Healthcare Web API service to App Services](#task-2--deploy-the-humongous-healthcare-web-api-service-to-app-services)
   - [Exercise 3:  Configure continuous deployment with GitHub Actions](#exercise-3--configure-continuous-deployment-with-github-actions)
     - [Task 1:  Create and Edit a GitHub Action](#task-1--create-and-edit-a-github-action)
   - [Exercise 4:  Configure API Management](#exercise-4--configure-api-management)
@@ -30,7 +30,7 @@ September 2022
 
 ## Abstract and learning objectives
 
-In this hands-on-lab, you will build a proof of concept for an Application Innovation solution, combining several Azure services and technologies together to solve a customer problem.  In this lab, you will deploy a .NET 6 Web API application to App Services and perform continuous integration and continuous deployment with GitHub Actions.  Then, you will use the API Management service to "protect" Web API and allow for centralized API versioning and management.  ~~TODO Then, you will create a custom Power Apps connector from API and use it in a Power Apps application.~~
+In this hands-on-lab, you will build a proof of concept for an Application Innovation solution, combining several Azure services and technologies together to solve a customer problem.  In this lab, you will deploy a .NET 6 Web API application to Azure Kubernetes Service and perform continuous integration and continuous deployment with GitHub Actions.  Then, you will use the API Management service to "protect" Web API and allow for centralized API versioning and management.  Then, you will deploy a React frontend to App Services and use it to access your API endpoints through API Management.
 
 ## Overview
 
@@ -38,7 +38,7 @@ In this hands-on-lab, you will build a proof of concept for an Application Innov
 
 Humongous already uses a variety of Microsoft Azure services, taking advantage of both Infrastructure-as-a-Service and Platform-as-a-Service offerings.  Their software engineers and infrastructure team have a good working familiarity with Azure services and wish to use this opportunity to develop an innovative product which can serve as a guide for future modernization of their existing applications and infrastructure.
 
-The Engineering team at Humongous Healthcare is looking for a modern, innovative application platform, but this is not the only key group which will be involved.  Business Analysts will be responsible for creating the business logic and user experience for most of the Health Checks applications.  ~~TODO These Business Analysts are not software developers, and they would like a low-code or no-code approach to application development without relying on Engineering.~~  These applications should be able to access API endpoints which the Engineering team plan to build.
+The Engineering team at Humongous Healthcare is looking for a modern, innovative application platform, but this is not the only key group which will be involved.  Business Analysts will be responsible for creating the business logic and user experience for most of the Health Checks applications (with the assistance of an outside consulting group).  The consulting group will not be required to deploy to AKS and have indicated that they prefer to work with App Services.  These applications should be able to access API endpoints which the Engineering team plan to build.
 
 Humongous would like to manage one API for accessing the back end of all of these health applications.  In practice, Humongous expects something on the order of 15-20 endpoints to support the breadth of their health check application suite, but for the purposes of a proof of concept, they would like to see two endpoints implemented:  one which submits information on current health status and one which retrieves submissions for the registered user.  The key data points Humongous would like to see in this proof of concept are as follows:
 
@@ -58,7 +58,7 @@ The following diagram provides a high-level overview of the Azure services we wi
 
 ![High-level architecture, as described below.](media/architecture-diagram.png "High-level architecture")
 
-API Management will allow Humongous Healthcare to centralize and manage information on a variety of API endpoints.  These API endpoints may be implemented using a variety of Azure services, but the one which makes the most intuitive sense is Azure App Services.  The serverless approach to Azure Function apps would fit Humongous's desire to limit dependencies on their operations staff, so it is also a good choice, but the Humongous developers already have experience developing Web API applications and can easily adapt that knowledge to App Services.  ~~TODO API Management also allows developers and business analysts to create Power Apps from the Azure portal, making it easy to consume these exposed API endpoints.~~
+API Management will allow Humongous Healthcare to centralize and manage information on a variety of API endpoints.  These API endpoints may be implemented using a variety of Azure services, but the one which makes the most intuitive sense is Azure Kubernetes Service because the engineering team eventual plans to orchestrate a large number of APIs.
 
 To store and retrieve data, the functions will use Cosmos DB for data storage.  This satisfies customer requests for a flexible schema and includes a rich .NET interface.  Furthermore, via Cosmos Link, we can include an automated process to make data available in Azure Synapse Analytics dedicated SQL pools or Spark pools.  This allows Humongous Healthcare data scientists to analyze data across a variety of end users over time without building extensive ELT pipelines or processes.  Because this would be a "phase two" operation, it deserves mention in an architectural diagram but will not be part of the proof of concept.
 
