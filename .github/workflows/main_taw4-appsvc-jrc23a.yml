@@ -10,6 +10,9 @@ on:
     paths:
       - 'Humongous.Healthcare.Web/**'
 
+env:
+  REACT_APP_API_URL: secrets.API_URL
+  REACT_APP_API_KEY: secrets.API_KEY
 jobs:
   build:
     runs-on: windows-latest
@@ -28,9 +31,6 @@ jobs:
 
       - name: Build with dotnet
         run: dotnet build --configuration Release
-        env:
-          REACT_APP_API_URL: secrets.API_URL
-          REACT_APP_API_KEY: secrets.API_KEY
 
       - name: dotnet publish
         run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
