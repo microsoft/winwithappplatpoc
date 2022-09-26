@@ -12,7 +12,10 @@ on:
 jobs:
   build:
     runs-on: windows-latest
-
+    defaults:
+      run:
+        working-directory: ./Humongous.Healthcare.Web/
+        
     steps:
       - uses: actions/checkout@v2
 
