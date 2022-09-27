@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'Humongous.Healthcare/**'
+      - Humongous.Healthcare/**
 
 jobs:
   build-and-deploy:
