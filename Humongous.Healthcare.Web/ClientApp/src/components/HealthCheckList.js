@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { HealthCheck } from './HealthCheck';
 
 export class HealthCheckList extends Component {
     // eslint-disable-next-line
@@ -19,7 +20,25 @@ export class HealthCheckList extends Component {
         console.log('Handle click.');
     }
 
-    static renderHealthChecksTable(healthChecks) {
+    handleDeleteHealthCheck = (id) => {
+        return fetch(process.env.REACT_APP_API_URL + '/' + id,
+            {
+                method: 'DELETE',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Ocp-Apim-Subscription-Key': process.env.REACT_APP_API_KEY 
+                }
+            })
+            .then(response => {
+                this.setState({
+                    healthChecks: this.state.healthChecks.filter(i => i.id !== id),
+                    loading: false
+                });
+            });
+    }
+
+    renderHealthChecksTable = (healthChecks) => {
         return (
             <table className='table table-striped' aria-labelledby="tabelLabel">
                 <thead>
@@ -28,16 +47,16 @@ export class HealthCheckList extends Component {
                         <th>Patient Id</th>
                         <th>Date</th>
                         <th>Status</th>
+                        <th>Symptoms</th>
                     </tr>
                 </thead>
                 <tbody>
                     {healthChecks.map(healthCheck =>
-                        <tr key={healthCheck.id}>
-                            <td>{healthCheck.id}</td>
-                            <td>{healthCheck.patientid}</td>
-                            <td>{healthCheck.date}</td>
-                            <td>{healthCheck.healthstatus}</td>
-                        </tr>
+                        <HealthCheck 
+                            key={healthCheck.id}
+                            healthCheck={healthCheck}
+                            onDelete={() => this.handleDeleteHealthCheck(healthCheck.id)}
+                        />
                     )}
                 </tbody>
                 <tfoot>
@@ -52,7 +71,7 @@ export class HealthCheckList extends Component {
     render() {
         let contents = this.state.loading
             ? <p><em>Loading...</em></p>
-            : HealthCheckList.renderHealthChecksTable(this.state.healthChecks);
+            : this.renderHealthChecksTable(this.state.healthChecks);
 
         return (
             <div>

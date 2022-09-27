@@ -38,7 +38,7 @@ export class AddHealthCheck extends Component {
             <div>
                 <h4>Submit a HealthCheck:</h4>
                 <form onSubmit={this.handleSubmit}>
-                    <input type="text" name="id" placeholder="Id" value={this.state.id} onChange={this.handleInput} />
+                    <input type="hidden" name="id" placeholder="Id" value="id" />
                     <input type="text" name="patientid" placeholder="Patient Id" value={this.state.patientid} onChange={this.handleInput} />
                     <input type="text" name="date" placeholder="Date" value={this.state.date} onChange={this.handleInput} />
                     <input type="text" name="healthstatus" placeholder="Health Status" value={this.state.healthstatus} onChange={this.handleInput} />
