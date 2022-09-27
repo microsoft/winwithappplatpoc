@@ -17,7 +17,9 @@ September 2022
   - [Exercise 2:  Review and publish the Humongous Healthcare Web API service](#exercise-2--review-and-publish-the-humongous-healthcare-web-api-service)
     - [Task 1:  Review the Humongous Healthcare Web API service](#task-1--review-the-humongous-healthcare-web-api-service)
     - [Task 2: Run the Humongos Healthcare Web API service in a container](#task-2-run-the-humongos-healthcare-web-api-service-in-a-container)
-    - [Task 3: Deploy the Humongous Healthcare Web API service to AKS](#task-3-deploy-the-humongous-healthcare-web-api-service-to-aks)
+    - [Task 3: Push the Humongous Healthcare Web API container image to ACR](#task-3-push-the-humongous-healthcare-web-api-container-image-to-acr)
+    - [Task 4: Deploy the Humongous Healthcare Web API service to AKS](#task-4-deploy-the-humongous-healthcare-web-api-service-to-aks)
+  - [TODO review](#todo-review)
   - [Exercise 3:  Configure continuous deployment with GitHub Actions](#exercise-3--configure-continuous-deployment-with-github-actions)
     - [Task 1:  Create and Edit a GitHub Action](#task-1--create-and-edit-a-github-action)
   - [Exercise 4:  Configure API Management](#exercise-4--configure-api-management)
@@ -26,6 +28,7 @@ September 2022
   - [Exercise 5:  Create a Power Apps custom connector and application](#exercise-5--create-a-power-apps-custom-connector-and-application)
     - [Task 1:  Create a custom Power Apps connector](#task-1--create-a-custom-power-apps-connector)
     - [Task 2:  Use the Power Apps custom connector in a new application](#task-2--use-the-power-apps-custom-connector-in-a-new-application)
+    - [Task 3: Deploy the Humongous Healthcare Web API service to AKS](#task-3-deploy-the-humongous-healthcare-web-api-service-to-aks)
 
 # Hands-on Lab Step-by-Step
 
@@ -244,29 +247,129 @@ Refer to the [Before the hands-on lab setup guide](Before%20the%20Hands-On%20Lab
 
 6. When you are done, use `Ctrl+C` to stop the container instance.
 
-### Task 3: Deploy the Humongous Healthcare Web API service to AKS
+### Task 3: Push the Humongous Healthcare Web API container image to ACR
 
-1. Open the Azure extension for Visual Studio Code.  Navigate to the **App Service** menu and select your App Service account.  Then, select the **Deploy to Web App...** option.
+1. Use the following command to tag your container image with your ACR login server name and a more descriptive repository name:
+
+    ```sh
+    docker tag api <replace with your login server>/humongous-healthcare-api:0.0.0
+    ```
+
+    Example:
+
+    ```sh
+    docker tag api taw.azurecr.io/humongous-healthcare-api:0.0.0
+    ```
+
+2. Login to the Azure CLI and the ACR instance using the following commands:
+
+    ```sh
+    az login
+    az acr login --name <acrName>
+    ```
+
+    Example
+    ```sh
+    az login
+    az acr login --name taw
+    ```
+
+3. Use the following command to push the container image to ACR.
+
+    ```sh
+    docker push <replace with your login server>/humongous-healthcare-api:0.0.0
+    ```
+
+    Example:
+
+    ```sh
+    docker push taw.azurecr.io/humongous-healthcare-api:0.0.0
+    ```
+
+### Task 4: Deploy the Humongous Healthcare Web API service to AKS
+
+1. Open the hands-on lab in Visual Studio Code and use the terminal to navigate to the `Humongous.Healthcare` project.
+
+2. Create a folder named `manifests` and add a file named `deployment.yml` with the following content:
+## TODO review
+    ```yaml
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+    name: "humongous-healthcare-api"
+    spec:
+    replicas: 3
+    selector:
+        matchLabels:
+        app: "humongous-healthcare-api"
+    template:
+        metadata:
+        labels:
+            app: "humongous-healthcare-api"
+        spec:
+        containers:
+            - name: "humongous-healthcare-api"
+            image: "taw4acrjrc23a.azurecr.io/humongous-healthcare-api:0.0.0"
+            env:
+                - name: CosmosDb__Account
+                valueFrom:
+                    secretKeyRef:
+                    name: cosmosdb
+                    key: cosmosdb-account
+                    optional: false
+                - name: CosmosDb__Key
+                valueFrom:
+                    secretKeyRef:
+                    name: cosmosdb
+                    key: cosmosdb-key
+                    optional: false
+                - name: CosmosDb__DatabaseName
+                value: HealthCheckDB
+                - name: CosmosDb__ContainerName
+                value: HealthCheck
+            imagePullPolicy: IfNotPresent
+            ports:
+                - name: http
+                containerPort: 80
+                protocol: TCP
+            livenessProbe:
+                httpGet:
+                path: /HealthCheck
+                port: http
+            readinessProbe:
+                httpGet:
+                path: /HealthCheck
+                port: http
+            resources:
+                limits:
+                cpu: 200m
+                memory: 256Mi
+                requests:
+                cpu: 200m
+                memory: 256Mi
+    ```
+
+3. Open the Azure extension for Visual Studio Code.  Navigate to the **App Service** menu and select your App Service account.  Then, select the **Deploy to Web App...** option.
 
     ![Select the App Service.](media/vscode-app-service.png 'App Service')
 
-2. Select **Browse** from the list of folders to deploy.
+4. Select **Browse** from the list of folders to deploy.
 
     ![Select the Browse option.](media/vscode-app-service-1.png 'Browse for a folder')
 
-3. Choose the **Humongous.Healthcare** folder.
+5. Choose the **Humongous.Healthcare** folder.
 
     ![Select the Humongous.Healthcare folder.](media/vscode-app-service-2.png 'Choose a folder')
 
-4. Choose the subscription hosting the App Service in the next step, and then select the App Service itself in the following step.
+6. Choose the subscription hosting the App Service in the next step, and then select the App Service itself in the following step.
 
     ![Select the App Service.](media/vscode-app-service-3.png 'Choose an App Service')
 
-5. Select **Deploy** from the next menu to push the service.
+7. Select **Deploy** from the next menu to push the service.
 
     ![Deploy the App Service.](media/vscode-app-service-4.png 'Deploy the App Service')
 
-6. Navigate to the **Configuration** option in the **Settings** menu for your App Service and select **+ New application setting**.  Enter the following application settings:
+8. Navigate to the **Configuration** option in the **Settings** menu for your App Service and select **+ New application setting**.  Enter the following application settings:
 
     | Name                    | Value                                              |
     | ----------------------- | -------------------------------------------------- |
@@ -435,3 +538,41 @@ For this final exercise, you will need a Power Apps subscription.  This may be a
 At this point, you can reference the **HealthChecks** connector and methods such as `HealthChecks.gethealthcheck()` to populate canvas elements.  Using the available API endpoints, you can create a mobile application which allows for entering new health check data, reviewing old health checks, and listing symptoms on a details page.
 
 ![An example health check application built using Power Apps.](media/health-checks-app.png 'The Health Checks app')
+
+
+### Task 3: Deploy the Humongous Healthcare Web API service to AKS
+
+1. Open the Azure extension for Visual Studio Code.  Navigate to the **App Service** menu and select your App Service account.  Then, select the **Deploy to Web App...** option.
+
+    ![Select the App Service.](media/vscode-app-service.png 'App Service')
+
+2. Select **Browse** from the list of folders to deploy.
+
+    ![Select the Browse option.](media/vscode-app-service-1.png 'Browse for a folder')
+
+3. Choose the **Humongous.Healthcare** folder.
+
+    ![Select the Humongous.Healthcare folder.](media/vscode-app-service-2.png 'Choose a folder')
+
+4. Choose the subscription hosting the App Service in the next step, and then select the App Service itself in the following step.
+
+    ![Select the App Service.](media/vscode-app-service-3.png 'Choose an App Service')
+
+5. Select **Deploy** from the next menu to push the service.
+
+    ![Deploy the App Service.](media/vscode-app-service-4.png 'Deploy the App Service')
+
+6. Navigate to the **Configuration** option in the **Settings** menu for your App Service and select **+ New application setting**.  Enter the following application settings:
+
+    | Name                    | Value                                              |
+    | ----------------------- | -------------------------------------------------- |
+    | CosmosDb__Account       | _enter the URL of your Cosmos DB account_          |
+    | CosmosDb__Key           | _enter the primary key for your Cosmos DB account_ |
+    | CosmosDb__DatabaseName  | _enter `HealthCheckDB`_                            |
+    | CosmosDb__ContainerName | _enter `HealthCheck`_                              |
+
+    Select **Save** to save these application settings.
+
+    ![Application settings for the App Service.](media/app-service-app-settings.png 'Application settings')
+
+> **Note:** If you get 404 errors when trying to access your App Service at this point, don't panic!  The purpose of this task was to link your existing code with an App Service.  In the next task, you will configure a CI/CD process to perform this deployment automatically upon check-in.  If you do see 404 errors, the following exercise will correct them.
