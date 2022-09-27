@@ -6,7 +6,7 @@ name: Build and deploy ASP.Net Core app to Azure Web App - taw4-appsvc-jrc23a
 on:
   push:
     branches:
-      - main
+      - develop
     paths:
       - 'Humongous.Healthcare.Web/**'
       - '.github/workflows/main_taw4-appsvc-jrc23a.yml'
@@ -20,7 +20,7 @@ jobs:
     defaults:
       run:
         working-directory: ./Humongous.Healthcare.Web/
-        
+
     steps:
       - uses: actions/checkout@v2
 

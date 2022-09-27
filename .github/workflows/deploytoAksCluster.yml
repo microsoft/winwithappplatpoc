@@ -3,10 +3,10 @@ name: API - Build and deploy ASP.Net Core API to AKS
 on:
   push:
     branches:
-      - main
+      - develop
     paths:
       - 'Humongous.Healthcare/**'
-      
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
