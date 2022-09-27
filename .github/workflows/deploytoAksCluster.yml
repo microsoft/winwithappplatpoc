@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - Humongous.Healthcare/**
+      - manifests/**
 
 jobs:
   build-and-deploy:
