@@ -27,6 +27,9 @@ September 2022
 
 3. Install the latest version of [the .NET 6 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/6.0).
 
+4. Install [Docker Desktop](https://docs.docker.com/desktop/)
+5. Install the [Kubernetes CLI](https://kubernetes.io/docs/tasks/tools/)
+
 ## Before the hands-on lab
 
 Duration: 15 minutes
