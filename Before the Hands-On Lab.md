@@ -1,8 +1,8 @@
-<h1>Win with App Innovation -- Contoso Healthcare Proof of Concept</h1>
+<h1>Win with App Innovation -- Humongous Healthcare Proof of Concept</h1>
 
 <h2>Before the hands-on lab</h2>
 
-October 2021
+September 2022
 
 **Table of contents**
 
@@ -21,13 +21,14 @@ October 2021
 
     - Trial subscriptions will not work.
 
-2. Power Apps subscription.  In order to use the custom connector we will create from API Management, you will need a Power Apps per app or per user plan.  You may also use the free [Power Apps developer plan](https://powerapps.microsoft.com/en-us/developerplan/).
-
-3. Install [Visual Studio Code](https://code.visualstudio.com/).
+2. Install [Visual Studio Code](https://code.visualstudio.com/).
 
     - Install the [C# for Visual Studio Code extension](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csharp).
 
-4. Install the latest version of [the .NET 5 SDK](https://dotnet.microsoft.com/download/dotnet/5.0).
+3. Install the latest version of [the .NET 6 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/6.0).
+
+4. Install [Docker Desktop](https://docs.docker.com/desktop/)
+5. Install the [Kubernetes CLI](https://kubernetes.io/docs/tasks/tools/)
 
 ## Before the hands-on lab
 
@@ -47,11 +48,11 @@ In this task, you will use the Azure Portal to create a new Azure Resource Group
 
 3. In the left-hand menu, select **Resource Groups**.
 
-4. At the top of the screen select the **+ New** option to add a new resource group.
+4. At the top of the screen select the **+ Create** option to add a new resource group.
 
    ![The Add Resource Group Menu is displayed.](media/add-resource-group-menu.png 'Resource Group Menu')
 
-5. Create a new resource group with the name **tsi-win-with-app-platform**, ensuring that the proper subscription and region nearest you are selected. Once you have chosen a location, select **Review + Create**.
+5. Create a new resource group with the name **taw-win-with-app-platform**, ensuring that the proper subscription and region nearest you are selected. Once you have chosen a location, select **Review + Create**.
 
    ![How to Create a resource group is displayed.](media/create-resource-group.png 'Resource Group')
 
@@ -68,9 +69,9 @@ The below ARM template deploys several Azure resources for the labs, including A
 2. On the **Custom deployment** form fill in the fields described below.
 
    - **Subscription**: Select your desired subscription for the deployment.
-   - **Resource group**: Select the resource group you previously created, `tsi-win-with-app-platform`.
+   - **Resource group**: Select the resource group you previously created, `taw-win-with-app-platform`.
    - **Region**: The region where your Azure resources will be created.  All resources will be created in your resource group's region.
-   - **Unique Suffix**: This unique suffix will be used naming resources that will created as part of your deployment, such as your initials followed by the current date in YYYYMMDD format (ex. `jdh20210615`). Make sure you follow correct Azure [Resource naming](https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/naming-and-tagging#resource-naming) conventions.
+   - **Unique Suffix**: This unique suffix will be used naming resources that will created as part of your deployment, such as your initials followed by the current year and month in YYYYMM format (ex. `jdh202106`). Make sure you follow correct Azure [Resource naming](https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/naming-and-tagging#resource-naming) conventions.
    - **Publisher Email**:  Enter your e-mail address.  API Management uses this as part of its publisher properties.
    - **Publisher Name**:  Enter your organization's name.  API Management uses this asp art of its publisher properties.
 
