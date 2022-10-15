@@ -493,7 +493,7 @@ Refer to the [Before the hands-on lab setup guide](Before%20the%20Hands-On%20Lab
             secret-type: 'generic'
             secret-name: cosmosdb
             arguments: |
-              --from-literal=cosmosdb-account=${{ secrets.COSMOSDB_ACCOUNT }}
+              --from-literal=cosmosdb-account=${{ secrets.COSMOSDB_ACCOUNT }} \
               --from-literal=cosmosdb-key=${{ secrets.COSMOSDB_KEY }}
 
         - uses: azure/k8s-deploy@v1.2
