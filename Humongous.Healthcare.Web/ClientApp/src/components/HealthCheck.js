@@ -25,7 +25,7 @@ export class HealthCheck extends Component {
                     <td>{this.state.healthstatus}</td>
                     <td>
                         <ul>
-                            {this.state.symptoms.map(symptom, index =>
+                            {this.state.symptoms.map((symptom, index) =>
                                 <li key={index}>{symptom}</li>
                             )}
                         </ul>

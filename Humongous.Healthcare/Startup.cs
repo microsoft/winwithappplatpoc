@@ -33,6 +33,15 @@ namespace Humongous.Healthcare
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Humongous.Healthcare", Version = "v1" });
             });
             services.AddSingleton<ICosmosDbService>(InitializeCosmosClientInstanceAsync(Configuration.GetSection("CosmosDb")).GetAwaiter().GetResult());
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(policy =>
+                {
+                    policy.AllowAnyOrigin()
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -46,6 +55,8 @@ namespace Humongous.Healthcare
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Humongous.Healthcare v1"));
 
             app.UseRouting();
+
+            app.UseCors();
 
             app.UseAuthorization();
 
