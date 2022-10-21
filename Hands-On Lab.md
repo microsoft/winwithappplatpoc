@@ -505,6 +505,8 @@ Refer to the [Before the hands-on lab setup guide](Before%20the%20Hands-On%20Lab
                 dockerauth
     ```
 
+    > Note: An example of this YAML file can be located in the `./actions` folder of this lab as `deployToAksCluster.yml`.
+
 3. The workflow will fail on the intial run because it requires some secrets to be setup in the repository.  Navigate to the repository in GitHub then select "Settings > Secrets > Actions".  Finally use the "New Repository Secret" button to create secrets.
 
     ![Create a new repository secret.](media/github-new-repository-secret.png "New Repository Secret")
