@@ -302,7 +302,7 @@ Refer to the [Before the hands-on lab setup guide](Before%20the%20Hands-On%20Lab
       replicas: 3
       selector:
         matchLabels:
-        app: "humongous-healthcare-api"
+          app: "humongous-healthcare-api"
       template:
         metadata:
           labels:
@@ -330,9 +330,9 @@ Refer to the [Before the hands-on lab setup guide](Before%20the%20Hands-On%20Lab
               value: HealthCheck
             imagePullPolicy: IfNotPresent
             ports:
-            - name: http
-              containerPort: 80
-              protocol: TCP
+              - name: http
+                containerPort: 80
+                protocol: TCP
             livenessProbe:
               httpGet:
                 path: /HealthCheck
@@ -458,16 +458,13 @@ Refer to the [Before the hands-on lab setup guide](Before%20the%20Hands-On%20Lab
         - name: Build and push image to ACR
           id: build-image
           run: |
-            docker build "$GITHUB_WORKSPACE/Humongous.Healthcare" \
-              -f  "Humongous.Healthcare/Dockerfile" \
-              -t ${CONTAINER_IMAGE} \
-              --label dockerfile-path=Humongous.Healthcare/Dockerfile
+            docker build "$GITHUB_WORKSPACE/Humongous.Healthcare" -f  "Humongous.Healthcare/Dockerfile" -t ${CONTAINER_IMAGE} --label dockerfile-path=Humongous.Healthcare/Dockerfile
             docker push ${CONTAINER_IMAGE}
 
         - uses: azure/k8s-set-context@v1
+          id: login
           with:
             kubeconfig: ${{ secrets.aks_kubeConfig }}
-            id: login
 
         - name: Create namespace
           run: |
@@ -492,20 +489,20 @@ Refer to the [Before the hands-on lab setup guide](Before%20the%20Hands-On%20Lab
             namespace: ${{ env.AKS_NAMESPACE }}
             secret-type: 'generic'
             secret-name: cosmosdb
-            arguments: |
-              --from-literal=cosmosdb-account=${{ secrets.COSMOSDB_ACCOUNT }} \
+            arguments:
+              --from-literal=cosmosdb-account=${{ secrets.COSMOSDB_ACCOUNT }}
               --from-literal=cosmosdb-key=${{ secrets.COSMOSDB_KEY }}
 
         - uses: azure/k8s-deploy@v1.2
           with:
             namespace: ${{ env.AKS_NAMESPACE }}
             manifests: |
-                manifests/deployment.yml
-                manifests/service.yml
+              manifests/deployment.yml
+              manifests/service.yml
             images: |
-                ${{ env.CONTAINER_IMAGE }}
+              ${{ env.CONTAINER_IMAGE }}
             imagepullsecrets: |
-                dockerauth
+              dockerauth
     ```
 
     > Note: An example of this YAML file can be located in the `./actions` folder of this lab as `deployToAksCluster.yml`.
