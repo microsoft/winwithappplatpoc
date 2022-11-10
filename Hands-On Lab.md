@@ -297,55 +297,55 @@ Refer to the [Before the hands-on lab setup guide](Before%20the%20Hands-On%20Lab
     apiVersion: apps/v1
     kind: Deployment
     metadata:
-    name: "humongous-healthcare-api"
+      name: "humongous-healthcare-api"
     spec:
-    replicas: 3
-    selector:
+      replicas: 3
+      selector:
         matchLabels:
-        app: "humongous-healthcare-api"
-    template:
+          app: "humongous-healthcare-api"
+      template:
         metadata:
-        labels:
+          labels:
             app: "humongous-healthcare-api"
         spec:
-        containers:
-            - name: "humongous-healthcare-api"
+          containers:
+          - name: "humongous-healthcare-api"
             image: "<replace with your login server>/humongous-healthcare-api:0.0.0"
             env:
-                - name: CosmosDb__Account
-                valueFrom:
-                    secretKeyRef:
-                    name: cosmosdb
-                    key: cosmosdb-account
-                    optional: false
-                - name: CosmosDb__Key
-                valueFrom:
-                    secretKeyRef:
-                    name: cosmosdb
-                    key: cosmosdb-key
-                    optional: false
-                - name: CosmosDb__DatabaseName
-                value: HealthCheckDB
-                - name: CosmosDb__ContainerName
-                value: HealthCheck
+            - name: CosmosDb__Account
+              valueFrom:
+                secretKeyRef:
+                  name: cosmosdb
+                  key: cosmosdb-account
+                  optional: false
+            - name: CosmosDb__Key
+              valueFrom:
+                secretKeyRef:
+                  name: cosmosdb
+                  key: cosmosdb-key
+                  optional: false
+            - name: CosmosDb__DatabaseName
+              value: HealthCheckDB
+            - name: CosmosDb__ContainerName
+              value: HealthCheck
             imagePullPolicy: IfNotPresent
             ports:
-                - name: http
+              - name: http
                 containerPort: 80
                 protocol: TCP
             livenessProbe:
-                httpGet:
+              httpGet:
                 path: /HealthCheck
                 port: http
             readinessProbe:
-                httpGet:
+              httpGet:
                 path: /HealthCheck
                 port: http
             resources:
-                limits:
+              limits:
                 cpu: 200m
                 memory: 256Mi
-                requests:
+              requests:
                 cpu: 200m
                 memory: 256Mi
     ```
@@ -358,17 +358,17 @@ Refer to the [Before the hands-on lab setup guide](Before%20the%20Hands-On%20Lab
     apiVersion: v1
     kind: Service
     metadata:
-    name: "humongous-healthcare-api"
-    labels:
+      name: "humongous-healthcare-api"
+      labels:
         app: "humongous-healthcare-api"
     spec:
-    type: LoadBalancer
-    ports:
-        - port: 80
+      type: LoadBalancer
+      ports:
+      - port: 80
         targetPort: 80
         protocol: TCP
         name: http
-    selector:
+      selector:
         app: "humongous-healthcare-api"
     ```
 
@@ -433,76 +433,76 @@ Refer to the [Before the hands-on lab setup guide](Before%20the%20Hands-On%20Lab
 
     on:
     push:
-        branches:
-        - main
-        paths:
-        - Humongous.Healthcare/**
-        - manifests/**
+      branches:
+      - main
+      paths:
+      - Humongous.Healthcare/**
+      - manifests/**
 
     jobs:
     build-and-deploy:
-        runs-on: ubuntu-latest
-        env:
+      runs-on: ubuntu-latest
+      env:
         ACR_LOGIN_SERVER: <replace with your ACR name>.azurecr.io
         AKS_NAMESPACE: health-check
         CONTAINER_IMAGE: <replace with your ACR name>.azurecr.io/humongous-healthcare-api:${{ github.sha }}
-        steps:
-        - uses: actions/checkout@master
+      steps:
+      - uses: actions/checkout@master
 
-        - uses: azure/docker-login@v1
-            with:
-            login-server: ${{ env.ACR_LOGIN_SERVER }}
-            username: ${{ secrets.acr_username }}
-            password: ${{ secrets.acr_password }}
+      - uses: azure/docker-login@v1
+        with:
+          login-server: ${{ env.ACR_LOGIN_SERVER }}
+          username: ${{ secrets.acr_username }}
+          password: ${{ secrets.acr_password }}
 
-        - name: Build and push image to ACR
-            id: build-image
-            run: |
-            docker build "$GITHUB_WORKSPACE/Humongous.Healthcare" -f  "Humongous.Healthcare/Dockerfile" -t ${CONTAINER_IMAGE} --label dockerfile-path=Humongous.Healthcare/Dockerfile
-            docker push ${CONTAINER_IMAGE}
+      - name: Build and push image to ACR
+        id: build-image
+        run: |
+          docker build "$GITHUB_WORKSPACE/Humongous.Healthcare" -f  "Humongous.Healthcare/Dockerfile" -t ${CONTAINER_IMAGE} --label dockerfile-path=Humongous.Healthcare/Dockerfile
+          docker push ${CONTAINER_IMAGE}
 
-        - uses: azure/k8s-set-context@v1
-            with:
-            kubeconfig: ${{ secrets.aks_kubeConfig }}
-            id: login
+      - uses: azure/k8s-set-context@v1
+        id: login
+        with:
+          kubeconfig: ${{ secrets.aks_kubeConfig }}
 
-        - name: Create namespace
-            run: |
-            namespacePresent=`kubectl get namespace | grep ${AKS_NAMESPACE} | wc -l`
-            if [ $namespacePresent -eq 0 ]
-            then
-                echo `kubectl create namespace ${AKS_NAMESPACE}`
-            fi
+      - name: Create namespace
+        run: |
+          namespacePresent=`kubectl get namespace | grep ${AKS_NAMESPACE} | wc -l`
+          if [ $namespacePresent -eq 0 ]
+          then
+              echo `kubectl create namespace ${AKS_NAMESPACE}`
+          fi
 
-        - uses: azure/k8s-create-secret@v1
-            name: dockerauth - create secret
-            with:
-            namespace: ${{ env.AKS_NAMESPACE }}
-            container-registry-url: ${{ env.ACR_LOGIN_SERVER }}
-            container-registry-username: ${{ secrets.acr_username }}
-            container-registry-password: ${{ secrets.acr_password }}
-            secret-name: dockerauth
+      - uses: azure/k8s-create-secret@v1
+        name: dockerauth - create secret
+        with:
+          namespace: ${{ env.AKS_NAMESPACE }}
+          container-registry-url: ${{ env.ACR_LOGIN_SERVER }}
+          container-registry-username: ${{ secrets.acr_username }}
+          container-registry-password: ${{ secrets.acr_password }}
+          secret-name: dockerauth
 
-        - uses: Azure/k8s-create-secret@v1
-            name: cosmosdb - create secret
-            with:
-            namespace: ${{ env.AKS_NAMESPACE }}
-            secret-type: 'generic'
-            secret-name: cosmosdb
-            arguments:
-                --from-literal=cosmosdb-account=${{ secrets.COSMOSDB_ACCOUNT }}
-                --from-literal=cosmosdb-key=${{ secrets.COSMOSDB_KEY }}
+      - uses: Azure/k8s-create-secret@v1
+        name: cosmosdb - create secret
+        with:
+          namespace: ${{ env.AKS_NAMESPACE }}
+          secret-type: 'generic'
+          secret-name: cosmosdb
+          arguments:
+            --from-literal=cosmosdb-account=${{ secrets.COSMOSDB_ACCOUNT }}
+            --from-literal=cosmosdb-key=${{ secrets.COSMOSDB_KEY }}
 
-        - uses: azure/k8s-deploy@v1.2
-            with:
-            namespace: ${{ env.AKS_NAMESPACE }}
-            manifests: |
-                manifests/deployment.yml
-                manifests/service.yml
-            images: |
-                ${{ env.CONTAINER_IMAGE }}
-            imagepullsecrets: |
-                dockerauth
+      - uses: azure/k8s-deploy@v1.2
+        with:
+          namespace: ${{ env.AKS_NAMESPACE }}
+          manifests: |
+            manifests/deployment.yml
+            manifests/service.yml
+          images: |
+            ${{ env.CONTAINER_IMAGE }}
+          imagepullsecrets: |
+            dockerauth
     ```
 
 3. The workflow will fail on the intial run because it requires some secrets to be setup in the repository.  Navigate to the repository in GitHub then select "Settings > Secrets > Actions".  Finally use the "New Repository Secret" button to create secrets.

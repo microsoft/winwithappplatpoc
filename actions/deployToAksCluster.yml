@@ -1,0 +1,74 @@
+name: API - AKS - Build and deploy
+
+on:
+push:
+  branches:
+  - main
+  paths:
+  - Humongous.Healthcare/**
+  - manifests/**
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    env:
+      ACR_LOGIN_SERVER: <replace with your ACR name>.azurecr.io
+      AKS_NAMESPACE: health-check
+      CONTAINER_IMAGE: <replace with your ACR name>.azurecr.io/humongous-healthcare-api:${{ github.sha }}
+    steps:
+    - uses: actions/checkout@master
+
+    - uses: azure/docker-login@v1
+      with:
+        login-server: ${{ env.ACR_LOGIN_SERVER }}
+        username: ${{ secrets.acr_username }}
+        password: ${{ secrets.acr_password }}
+
+    - name: Build and push image to ACR
+      id: build-image
+      run: |
+        docker build "$GITHUB_WORKSPACE/Humongous.Healthcare" -f  "Humongous.Healthcare/Dockerfile" -t ${CONTAINER_IMAGE} --label dockerfile-path=Humongous.Healthcare/Dockerfile
+        docker push ${CONTAINER_IMAGE}
+
+    - uses: azure/k8s-set-context@v1
+      id: login
+      with:
+        kubeconfig: ${{ secrets.aks_kubeConfig }}
+
+    - name: Create namespace
+      run: |
+        namespacePresent=`kubectl get namespace | grep ${AKS_NAMESPACE} | wc -l`
+        if [ $namespacePresent -eq 0 ]
+        then
+            echo `kubectl create namespace ${AKS_NAMESPACE}`
+        fi
+
+    - uses: azure/k8s-create-secret@v1
+      name: dockerauth - create secret
+      with:
+        namespace: ${{ env.AKS_NAMESPACE }}
+        container-registry-url: ${{ env.ACR_LOGIN_SERVER }}
+        container-registry-username: ${{ secrets.acr_username }}
+        container-registry-password: ${{ secrets.acr_password }}
+        secret-name: dockerauth
+
+    - uses: Azure/k8s-create-secret@v1
+      name: cosmosdb - create secret
+      with:
+        namespace: ${{ env.AKS_NAMESPACE }}
+        secret-type: 'generic'
+        secret-name: cosmosdb
+        arguments:
+          --from-literal=cosmosdb-account=${{ secrets.COSMOSDB_ACCOUNT }}
+          --from-literal=cosmosdb-key=${{ secrets.COSMOSDB_KEY }}
+
+    - uses: azure/k8s-deploy@v1.2
+      with:
+        namespace: ${{ env.AKS_NAMESPACE }}
+        manifests: |
+          manifests/deployment.yml
+          manifests/service.yml
+        images: |
+          ${{ env.CONTAINER_IMAGE }}
+        imagepullsecrets: |
+          dockerauth
