@@ -440,70 +440,72 @@ Refer to the [Before the hands-on lab setup guide](Before%20the%20Hands-On%20Lab
       - manifests/**
 
     jobs:
-    build-and-deploy:
-      runs-on: ubuntu-latest
-      env:
-        ACR_LOGIN_SERVER: <replace with your ACR name>.azurecr.io
-        AKS_NAMESPACE: health-check
-        CONTAINER_IMAGE: <replace with your ACR name>.azurecr.io/humongous-healthcare-api:${{ github.sha }}
-      steps:
-      - uses: actions/checkout@master
+      build-and-deploy:
+        runs-on: ubuntu-latest
+        env:
+          ACR_LOGIN_SERVER: <replace with your ACR name>.azurecr.io
+          AKS_NAMESPACE: health-check
+          CONTAINER_IMAGE: <replace with your ACR name>.azurecr.io/humongous-healthcare-api:${{ github.sha }}
+        steps:
+        - uses: actions/checkout@master
 
-      - uses: azure/docker-login@v1
-        with:
-          login-server: ${{ env.ACR_LOGIN_SERVER }}
-          username: ${{ secrets.acr_username }}
-          password: ${{ secrets.acr_password }}
+        - uses: azure/docker-login@v1
+          with:
+            login-server: ${{ env.ACR_LOGIN_SERVER }}
+            username: ${{ secrets.acr_username }}
+            password: ${{ secrets.acr_password }}
 
-      - name: Build and push image to ACR
-        id: build-image
-        run: |
-          docker build "$GITHUB_WORKSPACE/Humongous.Healthcare" -f  "Humongous.Healthcare/Dockerfile" -t ${CONTAINER_IMAGE} --label dockerfile-path=Humongous.Healthcare/Dockerfile
-          docker push ${CONTAINER_IMAGE}
+        - name: Build and push image to ACR
+          id: build-image
+          run: |
+            docker build "$GITHUB_WORKSPACE/Humongous.Healthcare" -f  "Humongous.Healthcare/Dockerfile" -t ${CONTAINER_IMAGE} --label dockerfile-path=Humongous.Healthcare/Dockerfile
+            docker push ${CONTAINER_IMAGE}
 
-      - uses: azure/k8s-set-context@v1
-        id: login
-        with:
-          kubeconfig: ${{ secrets.aks_kubeConfig }}
+        - uses: azure/k8s-set-context@v1
+          id: login
+          with:
+            kubeconfig: ${{ secrets.aks_kubeConfig }}
 
-      - name: Create namespace
-        run: |
-          namespacePresent=`kubectl get namespace | grep ${AKS_NAMESPACE} | wc -l`
-          if [ $namespacePresent -eq 0 ]
-          then
-              echo `kubectl create namespace ${AKS_NAMESPACE}`
-          fi
+        - name: Create namespace
+          run: |
+            namespacePresent=`kubectl get namespace | grep ${AKS_NAMESPACE} | wc -l`
+            if [ $namespacePresent -eq 0 ]
+            then
+                echo `kubectl create namespace ${AKS_NAMESPACE}`
+            fi
 
-      - uses: azure/k8s-create-secret@v1
-        name: dockerauth - create secret
-        with:
-          namespace: ${{ env.AKS_NAMESPACE }}
-          container-registry-url: ${{ env.ACR_LOGIN_SERVER }}
-          container-registry-username: ${{ secrets.acr_username }}
-          container-registry-password: ${{ secrets.acr_password }}
-          secret-name: dockerauth
+        - uses: azure/k8s-create-secret@v1
+          name: dockerauth - create secret
+          with:
+            namespace: ${{ env.AKS_NAMESPACE }}
+            container-registry-url: ${{ env.ACR_LOGIN_SERVER }}
+            container-registry-username: ${{ secrets.acr_username }}
+            container-registry-password: ${{ secrets.acr_password }}
+            secret-name: dockerauth
 
-      - uses: Azure/k8s-create-secret@v1
-        name: cosmosdb - create secret
-        with:
-          namespace: ${{ env.AKS_NAMESPACE }}
-          secret-type: 'generic'
-          secret-name: cosmosdb
-          arguments:
-            --from-literal=cosmosdb-account=${{ secrets.COSMOSDB_ACCOUNT }}
-            --from-literal=cosmosdb-key=${{ secrets.COSMOSDB_KEY }}
+        - uses: Azure/k8s-create-secret@v1
+          name: cosmosdb - create secret
+          with:
+            namespace: ${{ env.AKS_NAMESPACE }}
+            secret-type: 'generic'
+            secret-name: cosmosdb
+            arguments:
+              --from-literal=cosmosdb-account=${{ secrets.COSMOSDB_ACCOUNT }}
+              --from-literal=cosmosdb-key=${{ secrets.COSMOSDB_KEY }}
 
-      - uses: azure/k8s-deploy@v1.2
-        with:
-          namespace: ${{ env.AKS_NAMESPACE }}
-          manifests: |
-            manifests/deployment.yml
-            manifests/service.yml
-          images: |
-            ${{ env.CONTAINER_IMAGE }}
-          imagepullsecrets: |
-            dockerauth
+        - uses: azure/k8s-deploy@v1.2
+          with:
+            namespace: ${{ env.AKS_NAMESPACE }}
+            manifests: |
+              manifests/deployment.yml
+              manifests/service.yml
+            images: |
+              ${{ env.CONTAINER_IMAGE }}
+            imagepullsecrets: |
+              dockerauth
     ```
+
+    > Note: An example of this YAML file can be located in the `./actions` folder of this lab as `deployToAksCluster.yml`.
 
 3. The workflow will fail on the intial run because it requires some secrets to be setup in the repository.  Navigate to the repository in GitHub then select "Settings > Secrets > Actions".  Finally use the "New Repository Secret" button to create secrets.
 
@@ -640,14 +642,14 @@ Because this project uses the `Swashbuckle.AspNetCore` NuGet package, we can bui
       REACT_APP_API_URL: ${{ secrets.API_URL }}     # <<-- referencing the GitHub secrets
       REACT_APP_API_KEY: ${{ secrets.API_KEY }}     # <<-- created in Step 2
     jobs:
-    build:
-      runs-on: windows-latest
+      build:
+        runs-on: windows-latest
 
-      defaults:                                             # <<-- Add default working directory
-        run:                                                # <<-- here to ensure deployment 
-          working-directory: ./Humongous.Healthcare.Web/    # <<-- targets correct path.
+        defaults:                                             # <<-- Add default working directory
+          run:                                                # <<-- here to ensure deployment 
+            working-directory: ./Humongous.Healthcare.Web/    # <<-- targets correct path.
     ​
-      steps:
+        steps:
         - uses: actions/checkout@v2
     ​
         - name: Set up .NET Core
