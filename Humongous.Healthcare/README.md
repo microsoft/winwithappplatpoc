@@ -23,4 +23,5 @@ To run the API service locally, it is necessary to define the `CosmosDb::Account
     "ContainerName": "HealthCheck"
   }
 }
+
 ```
