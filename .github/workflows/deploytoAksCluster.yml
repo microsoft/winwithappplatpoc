@@ -72,3 +72,4 @@ jobs:
           ${{ env.CONTAINER_IMAGE }}
         imagepullsecrets: |
           dockerauth
+          
